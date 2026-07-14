@@ -1,0 +1,86 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}小说列表 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📚 小说列表</h1>
+        <form class="search-form" method="get" action="{% url 'novel_list' %}">
+            <input type="text" name="search" placeholder="搜索小说标题、作者或描述..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+    </div>
+
+    <div class="filter-section">
+        <h3>分类筛选</h3>
+        <div class="filter-tags">
+            <a href="{% url 'novel_list' %}" class="filter-tag {% if not current_category %}active{% endif %}">全部</a>
+            {% for category in categories %}
+            <a href="?category={{ category.id }}" class="filter-tag {% if current_category == category.id %}active{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="filter-section" style="margin-top: 15px;">
+        <h3>平台筛选</h3>
+        <div class="filter-tags" id="platformFilters">
+            <a href="?{% if current_category %}category={{ current_category }}{% endif %}" class="filter-tag active platform-all">全部平台</a>
+        </div>
+    </div>
+
+    <div class="novel-list">
+        {% for novel in novels %}
+        <div class="novel-list-item">
+            <div class="novel-list-info">
+                <h3><a href="{% url 'novel_detail' novel.id %}">{{ novel.title }}</a></h3>
+                <p class="author">作者：{{ novel.author }}</p>
+                <p class="description">{{ novel.description|truncatechars:150 }}</p>
+                <div class="novel-meta">
+                    <span>来源：{{ novel.source }}</span>
+                    <span>平台：{{ novel.platform }}</span>
+                    <span>更新时间：{{ novel.crawl_time|date:"Y-m-d" }}</span>
+                </div>
+            </div>
+            <div class="novel-list-stats">
+                <div class="stat-item">
+                    <span class="stat-value">{{ novel.clicks }}</span>
+                    <span class="stat-label">点击</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ novel.collects }}</span>
+                    <span class="stat-label">收藏</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ novel.recommends }}</span>
+                    <span class="stat-label">推荐</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-message">
+            <p>暂无小说数据</p>
+            {% if search_query %}
+            <p>没有找到与"{{ search_query }}"相关的小说</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if novels.has_other_pages %}
+    <div class="pagination">
+        {% if novels.has_previous %}
+        <a href="?page={{ novels.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="page-link">上一页</a>
+        {% endif %}
+
+        <span class="page-current">第 {{ novels.number }} / {{ novels.paginator.num_pages }} 页</span>
+
+        {% if novels.has_next %}
+        <a href="?page={{ novels.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="page-link">下一页</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

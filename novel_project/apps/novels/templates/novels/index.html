@@ -1,0 +1,112 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}首页 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1>🎯 多平台小说大数据分析与推荐系统</h1>
+        <p>覆盖8大平台 · 15+分类 · 600+小说 · Hadoop+Spark+Django技术栈</p>
+        <p>基于物品协同过滤+TF-IDF内容分析+跨平台推荐的混合推荐算法</p>
+        <div class="hero-buttons">
+            <a href="{% url 'novel_list' %}" class="btn btn-primary">浏览小说</a>
+            <a href="{% url 'enhanced_analysis' %}" class="btn btn-secondary">增强分析</a>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="stats-cards">
+            <div class="stat-card">
+                <span class="stat-number">8</span>
+                <span class="stat-text">小说平台</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">15+</span>
+                <span class="stat-text">分类体系</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">600+</span>
+                <span class="stat-text">小说数据</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">4</span>
+                <span class="stat-text">推荐策略</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">📖 最新小说</h2>
+        <div class="novel-grid">
+            {% for novel in recent_novels %}
+            <div class="novel-card">
+                <div class="novel-info">
+                    <h3><a href="{% url 'novel_detail' novel.id %}">{{ novel.title }}</a></h3>
+                    <p class="author">👤 {{ novel.author }} | 📍 {{ novel.platform }}</p>
+                    <p class="description">{{ novel.description|truncatechars:80 }}</p>
+                    <div class="novel-stats">
+                        <span>👁️ {{ novel.clicks }}</span>
+                        <span>⭐ {{ novel.recommends }}</span>
+                        <span>❤️ {{ novel.collects }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-message">暂无小说数据，请先导入数据</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">🔥 热门小说</h2>
+        <div class="hot-novels">
+            {% for novel in hot_novels %}
+            <div class="hot-novel-item">
+                <span class="rank">#{{ forloop.counter }}</span>
+                <div class="hot-novel-info">
+                    <h4><a href="{% url 'novel_detail' novel.id %}">{{ novel.title }}</a></h4>
+                    <p>{{ novel.author }} · {{ novel.category.name }} · {{ novel.platform }}</p>
+                </div>
+                <span class="clicks">{{ novel.clicks }} 阅读</span>
+            </div>
+            {% empty %}
+            <p class="empty-message">暂无热门小说</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">📊 系统功能</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>多平台小说浏览</h3>
+                <p>8大平台小说数据浏览、搜索、筛选</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>分类与平台分析</h3>
+                <p>跨平台分类统计与对比分析</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>数据可视化</h3>
+                <p>ECharts多维图表展示分析结果</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>智能推荐</h3>
+                <p>TF-IDF + 协同过滤 + 跨平台推荐</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

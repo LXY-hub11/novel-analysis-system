@@ -1,0 +1,36 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}活动历史 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>📋 活动历史</h1>
+
+    <div class="activity-list">
+        {% for activity in activities %}
+        <div class="activity-item">
+            <div class="activity-icon">
+                {% if activity.activity_type == 'login' %}🚀
+                {% elif activity.activity_type == 'register' %}📝
+                {% elif activity.activity_type == 'update_profile' %}✏️
+                {% elif activity.activity_type == 'collect' %}❤️
+                {% elif activity.activity_type == 'rate' %}⭐
+                {% else %}📌{% endif %}
+            </div>
+            <div class="activity-content">
+                <h3>{{ activity.activity_description }}</h3>
+                <p>类型：{{ activity.activity_type }}</p>
+                {% if activity.ip_address %}
+                <p>IP：{{ activity.ip_address }}</p>
+                {% endif %}
+            </div>
+            <div class="activity-time">
+                {{ activity.created_at|date:"Y-m-d H:i" }}
+            </div>
+        </div>
+        {% empty %}
+        <p class="empty-message">暂无活动记录</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

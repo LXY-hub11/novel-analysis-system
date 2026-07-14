@@ -1,0 +1,89 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}个人资料 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+        <h1>个人资料</h1>
+
+        <div class="profile-info">
+            <div class="profile-avatar">
+                {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="头像">
+                {% else %}
+                <div class="avatar-placeholder">👤</div>
+                {% endif %}
+            </div>
+
+            <form id="profileForm" class="profile-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" value="{{ user.username }}" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">手机号</label>
+                    <input type="text" id="phone" name="phone" value="{{ profile.phone|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">性别</label>
+                    <select id="gender" name="gender">
+                        <option value="unknown" {% if profile.gender == 'unknown' %}selected{% endif %}>未知</option>
+                        <option value="male" {% if profile.gender == 'male' %}selected{% endif %}>男</option>
+                        <option value="female" {% if profile.gender == 'female' %}selected{% endif %}>女</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">个人简介</label>
+                    <textarea id="bio" name="bio" rows="4">{{ profile.bio|default:'' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">保存修改</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#profileForm').submit(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '{% url "update_profile" %}',
+            type: 'POST',
+            headers: {'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()},
+            data: JSON.stringify({
+                email: $('#email').val(),
+                phone: $('#phone').val(),
+                gender: $('#gender').val(),
+                bio: $('#bio').val()
+            }),
+            contentType: 'application/json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('资料更新成功！');
+                } else {
+                    alert('更新失败：' + response.message);
+                }
+            },
+            error: function() {
+                alert('更新失败，请重试');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

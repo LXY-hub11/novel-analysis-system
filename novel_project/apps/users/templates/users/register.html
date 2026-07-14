@@ -1,0 +1,46 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}注册 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>注册</h1>
+
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required placeholder="请输入用户名">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" required placeholder="请输入邮箱">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required placeholder="请输入密码">
+                </div>
+
+                <div class="form-group">
+                    <label for="password2">确认密码</label>
+                    <input type="password" id="password2" name="password2" required placeholder="请再次输入密码">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">注册</button>
+            </form>
+
+            <div class="auth-links">
+                <p>已有账号？ <a href="{% url 'login' %}">立即登录</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

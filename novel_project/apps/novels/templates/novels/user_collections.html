@@ -1,0 +1,43 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}我的收藏 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>❤️ 我的收藏</h1>
+
+    {% if user.is_authenticated %}
+    <div class="collections-list">
+        {% for collection in collections %}
+        <div class="collection-item">
+            <div class="collection-info">
+                <h3><a href="{% url 'novel_detail' collection.novel.id %}">{{ collection.novel.title }}</a></h3>
+                <p class="author">作者：{{ collection.novel.author }}</p>
+                <p class="description">{{ collection.novel.description|truncatechars:120 }}</p>
+                <div class="collection-meta">
+                    <span>收藏时间：{{ collection.created_at|date:"Y-m-d H:i" }}</span>
+                    <span>点击：{{ collection.novel.clicks }}</span>
+                </div>
+            </div>
+            <div class="collection-actions">
+                <button class="btn btn-danger remove-collection" data-collection-id="{{ collection.id }}">
+                    取消收藏
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-message">
+            <p>您还没有收藏任何小说</p>
+            <a href="{% url 'novel_list' %}" class="btn btn-primary">去浏览小说</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="login-prompt">
+        <p>登录后即可查看您的收藏</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">立即登录</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

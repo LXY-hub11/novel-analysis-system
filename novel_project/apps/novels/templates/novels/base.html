@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}小说数据分析推荐系统{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/jquery.min.js"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="{% url 'index' %}">📚 小说数据分析推荐系统</a>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="{% url 'index' %}">首页</a></li>
+                <li><a href="{% url 'novel_list' %}">小说列表</a></li>
+                <li><a href="{% url 'category_analysis' %}">分类分析</a></li>
+                <li><a href="{% url 'data_visualization' %}">数据可视化</a></li>
+                <li><a href="{% url 'enhanced_analysis' %}" style="color: #ff6b6b; font-weight: bold;">增强分析</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'recommendations' %}">个性化推荐</a></li>
+                    <li><a href="{% url 'user_collections' %}">我的收藏</a></li>
+                    <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>
+                    <li><a href="{% url 'logout' %}">退出</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">登录</a></li>
+                    <li><a href="{% url 'register' %}">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 小说数据分析推荐系统 | 基于 Spark + Hadoop + Django</p>
+            <p>大数据推荐算法 · 协同过滤 · 数据可视化</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

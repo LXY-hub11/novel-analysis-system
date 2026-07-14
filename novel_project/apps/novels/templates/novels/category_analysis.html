@@ -1,0 +1,102 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}分类分析 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>📊 分类分析</h1>
+
+    <div class="stats-cards">
+        <div class="stat-card">
+            <h3>小说总数</h3>
+            <p class="stat-number" id="totalNovels">{{ total_novels|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>分类总数</h3>
+            <p class="stat-number">{{ categories.count }}</p>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h2>📈 分类小说数量分布</h2>
+        <div id="categoryChart" style="width: 100%; height: 400px;"></div>
+    </div>
+
+    <div class="category-table">
+        <h2>📋 详细分类数据</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>分类名称</th>
+                    <th>小说数量</th>
+                    <th>平均点击</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in category_data %}
+                <tr>
+                    <td>{{ cat.name }}</td>
+                    <td>{{ cat.count }}</td>
+                    <td>{{ cat.avg_clicks }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">暂无分类数据</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/echarts.min.js"></script>
+<script>
+$(document).ready(function() {
+    var chartData = {{ category_data|safe }};
+
+    var chart = echarts.init(document.getElementById('categoryChart'));
+
+    var option = {
+        title: {
+            text: '小说分类分布',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: chartData.map(function(item) { return item.name; })
+        },
+        series: [
+            {
+                name: '小说数量',
+                type: 'pie',
+                radius: '65%',
+                center: ['50%', '50%'],
+                data: chartData.map(function(item) {
+                    return { value: item.count, name: item.name };
+                }),
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+
+    chart.setOption(option);
+
+    $(window).on('resize', function() {
+        chart.resize();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}登录 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>登录</h1>
+
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required placeholder="请输入用户名">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required placeholder="请输入密码">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">登录</button>
+            </form>
+
+            <div class="auth-links">
+                <p>还没有账号？ <a href="{% url 'register' %}">立即注册</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

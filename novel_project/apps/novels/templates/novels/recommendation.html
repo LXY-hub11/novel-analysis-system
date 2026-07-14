@@ -1,0 +1,77 @@
+{% extends 'novels/base.html' %}
+
+{% block title %}个性化推荐 - 小说数据分析推荐系统{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>🎯 个性化推荐</h1>
+
+    {% if user.is_authenticated %}
+    <div class="recommendation-section">
+        <h2>📚 基于您收藏的推荐</h2>
+
+        {% if user_collections %}
+        <div class="user-favorites">
+            <h3>您的收藏</h3>
+            <div class="novel-list">
+                {% for collection in user_collections %}
+                <div class="novel-item">
+                    <a href="{% url 'novel_detail' collection.novel.id %}">{{ collection.novel.title }}</a>
+                    <span>{{ collection.novel.author }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if recommended_novels %}
+        <div class="recommended-novels">
+            <h3>为您推荐</h3>
+            <div class="novel-grid">
+                {% for novel in recommended_novels %}
+                <div class="novel-card">
+                    <div class="novel-info">
+                        <h3><a href="{% url 'novel_detail' novel.id %}">{{ novel.title }}</a></h3>
+                        <p class="author">{{ novel.author }}</p>
+                        <p class="description">{{ novel.description|truncatechars:60 }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p class="empty-message">暂无推荐，请先收藏更多小说</p>
+        {% endif %}
+
+        {% else %}
+        <p class="empty-message">您还没有收藏任何小说</p>
+        <a href="{% url 'novel_list' %}" class="btn btn-primary">去浏览小说</a>
+        {% endif %}
+    </div>
+
+    <div class="recommendation-info">
+        <h2>💡 推荐算法说明</h2>
+        <div class="info-cards">
+            <div class="info-card">
+                <h3>基于物品协同过滤</h3>
+                <p>分析您收藏的小说，找到相似的小说推荐给您</p>
+            </div>
+            <div class="info-card">
+                <h3>分类热度</h3>
+                <p>根据您喜欢的分类，推荐该分类下的热门作品</p>
+            </div>
+            <div class="info-card">
+                <h3>混合推荐</h3>
+                <p>综合多种策略，为您提供精准的个性化推荐</p>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="login-prompt">
+        <p>登录后即可获得个性化推荐服务</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">立即登录</a>
+        <a href="{% url 'register' %}" class="btn btn-secondary">注册账号</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
